@@ -1,0 +1,35 @@
+1. RUN apt install git does not include -y, so the Docker build fails because it cannot answer the interactive prompt.
+2. The Dockerfile uses apt instead of apt-get; apt warns that it does not have a stable CLI interface for scripts.
+3. The apt update and apt install commands are split into separate RUN layers instead of being combined.
+4. The Dockerfile does not clean apt package lists after installing packages, making the image larger.
+5. The Dockerfile does not set a WORKDIR, so the copied scripts run from the default directory.
+6. The copied shell scripts may not have executable permissions inside the image.
+7. My current analyze.sh uses docker run to start the LLM, but inside the analyzer image the LLM is already available directly, so analyze.sh should call the llamafile path directly instead of running Docker inside Docker.
+Gemini Feedback Summary
+
+Gemini identified several issues:
+
+1. apt install should use -y because Docker builds are non-interactive.
+2. apt-get is preferred over apt in scripts and Dockerfiles.
+3. apt update and apt install should be combined into one RUN instruction.
+4. apt cache files should be removed to reduce image size.
+5. ARG values used in FROM are not automatically available later in the Dockerfile.
+
+My Evaluation
+
+I agreed with the recommendations about:
+- using apt-get
+- adding -y
+- combining RUN instructions
+- cleaning apt package lists
+
+I incorporated those changes into Dockerfile.analyze.
+
+Gemini correctly identified several important Docker best practices.
+However, it did not explicitly mention executable permissions for shell
+scripts or the issue of analyze.sh running Docker from inside the
+container.
+
+Overall, Gemini found most of the major issues and provided useful
+suggestions.
+Here's the chat link :https://gemini.google.com/share/5f7c449af0c9

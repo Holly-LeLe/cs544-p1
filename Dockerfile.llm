@@ -1,0 +1,9 @@
+FROM debian:bookworm-slim
+
+RUN apt-get update && apt-get install -y wget ca-certificates && rm -rf /var/lib/apt/lists/*
+
+RUN wget -O /google_gemma-3-4b-it-Q6_K.llamafile https://huggingface.co/mozilla-ai/gemma-3-4b-it-llamafile/resolve/main/google_gemma-3-4b-it-Q6_K.llamafile
+
+RUN chmod +x /google_gemma-3-4b-it-Q6_K.llamafile
+
+CMD ["sh", "-c", "/google_gemma-3-4b-it-Q6_K.llamafile"]
